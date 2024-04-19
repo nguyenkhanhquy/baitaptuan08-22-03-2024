@@ -1,6 +1,7 @@
 package hcmute.edu.vn.baitaptuan08_21110282_json_api_asynctask;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -36,10 +37,13 @@ public class ReadJSONObject extends AsyncTask<String,Void,String> {
             }
             bufferedReader.close();
         } catch (MalformedURLException e) {
+            Log.d("MalformedURLException", e.toString());
             e.printStackTrace();
         } catch (IOException e) {
+            Log.d("IOException", e.toString());
             e.printStackTrace();
         }
+        Log.d("Content", content.toString());
         return content.toString();
     }
 //    @Override
@@ -54,6 +58,33 @@ public class ReadJSONObject extends AsyncTask<String,Void,String> {
 //            String kq = name + "\n" + desc + "\n" + pic;
 //            Toast.makeText(activity,kq,Toast.LENGTH_SHORT).show();
 //        } catch (JSONException e) {
+//            e.printStackTrace();}
+//    }
+//    @Override
+//    protected void onPostExecute(String s) {
+//        super.onPostExecute(s);
+//        // Phân tích JSON
+//        try {
+//            JSONObject object = new JSONObject(s);
+//            // Kiểm tra xem object có chứa key "monhoc" hay không
+//            if (object.has("monhoc")) {
+//                // Xử lý mảng
+//                JSONArray array = object.getJSONArray("monhoc");
+//                // Duyệt các phần tử trong mảng
+//                for (int i = 0; i < array.length(); i++) {
+//                    JSONObject object1 = array.getJSONObject(i);
+//                    String name = object1.getString("name");
+//                    String desc = object1.getString("desc");
+//                    String pic = object1.getString("pic");
+//                    String kq = name + "\n" + desc + "\n" + pic;
+//                    // Hiển thị thông tin từ mảng JSON bằng Toast
+//                    Toast.makeText(activity, kq, Toast.LENGTH_SHORT).show();
+//                }
+//            } else {
+//                // Nếu không tìm thấy key "monhoc", hiển thị dữ liệu JSON lên Toast
+//                Toast.makeText(activity, s, Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
 //    }
@@ -62,27 +93,30 @@ public class ReadJSONObject extends AsyncTask<String,Void,String> {
         super.onPostExecute(s);
         // Phân tích JSON
         try {
-            JSONObject object = new JSONObject(s);
-            // Kiểm tra xem object có chứa key "monhoc" hay không
-            if (object.has("monhoc")) {
-                // Xử lý mảng
-                JSONArray array = object.getJSONArray("monhoc");
-                // Duyệt các phần tử trong mảng
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject object1 = array.getJSONObject(i);
-                    String name = object1.getString("name");
-                    String desc = object1.getString("desc");
-                    String pic = object1.getString("pic");
-                    String kq = name + "\n" + desc + "\n" + pic;
-                    // Hiển thị thông tin từ mảng JSON bằng Toast
-                    Toast.makeText(activity, kq, Toast.LENGTH_SHORT).show();
+            // Kiểm tra xem dữ liệu JSON có hợp lệ không
+            if (s != null && !s.isEmpty()) {
+                // Phân tích mảng JSON
+                JSONArray jsonArray = new JSONArray(s);
+                // Duyệt từng đối tượng trong mảng
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    // Lấy thông tin của người dùng từ đối tượng JSON
+                    int id = jsonObject.getInt("id");
+                    String name = jsonObject.getString("name");
+                    String username = jsonObject.getString("username");
+                    String email = jsonObject.getString("email");
+                    // Hiển thị thông tin của người dùng bằng Toast
+                    String userInfo = "ID: " + id + "\nName: " + name + "\nUsername: " + username + "\nEmail: " + email;
+                    //Toast.makeText(activity, userInfo, Toast.LENGTH_SHORT).show();
+                    Log.d("userInfo", userInfo);
                 }
             } else {
-                // Nếu không tìm thấy key "monhoc", hiển thị dữ liệu JSON lên Toast
-                Toast.makeText(activity, s, Toast.LENGTH_SHORT).show();
+                // Nếu dữ liệu JSON không hợp lệ, thông báo lỗi
+                Toast.makeText(activity, "Invalid JSON data", Toast.LENGTH_SHORT).show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 }
